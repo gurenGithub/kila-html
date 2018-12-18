@@ -1,7 +1,9 @@
 const path = require("path");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const Webpack = require('webpack');//1热更新
 const getEntry = require('./config/getEntry');
+const getLoader = require('./config/loader');
 const getHtml = require('./config/getHtml');
 var entries = getEntry();
 var htmls = getHtml();
@@ -21,11 +23,38 @@ var opts = {
     },
     module: {
         rules: [
-           {
-       　　     test: /\.html$/,
-       　　     loader: 'text-loader'// path.resolve(__dirname,'loader/html.js'),
-            }
-     ]},
+            {
+        　　     test: /\.html$/,
+        　　     loader: 'text-loader'// path.resolve(__dirname,'loader/html.js'),
+             },
+             {
+                test: /\.scss$/,
+                use:[
+                    //{ loader: 'vue-style-loader' },
+                { loader: 'css-loader', options: { sourceMap: true } },
+                { loader: 'sass-loader', options: { sourceMap: true } },
+                //{loader: 'postcss-loader',options:{plugins:[require("autoprefixer")("last 100 versions")]}},
+                { loader: 'sass-resources-loader',
+                  options: {
+                    sourceMap: true,
+                    resources: [
+                        path.resolve(__dirname, 'src/style/helpers/core/_variables.scss'),
+                        path.resolve(__dirname, 'src/style/helpers/core/_mixin.scss')
+                      //resolveFromRootDir('src/styles/variables.scss'),
+                    ]
+                  }
+                },
+                //{loader:'postcss-loader'},
+                /*{loader:'postcss-loader',options: {
+                    plugins: [
+                        //require("autoprefixer") 
+                    ]
+                }}*/
+            ]
+
+             }
+        ]
+    },
     //devServer
     devServer: {
         //设置服务器访问的基本目录
@@ -40,6 +69,12 @@ var opts = {
         new Webpack.HotModuleReplacementPlugin(),//3热更新
         new CleanWebpackPlugin(['dist']),//删除dist
         //new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: "[name].css",
+            chunkFilename: "[id].css"
+        })
     ],
 
 

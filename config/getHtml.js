@@ -69,7 +69,12 @@ const getHtml = function () {
             template: sortFile,
             //title: '第二个页面',
             filename: name,
-            chunks: [chunks]
+            chunks: [chunks],
+            minify:{
+                removeComments:true,
+                collapseWhitespace:true
+            }
+            
         });
 
         entries.push(page)

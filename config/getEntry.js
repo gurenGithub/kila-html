@@ -23,6 +23,9 @@ function fileDisplay(filePath) {
         //获取当前文件的绝对路径
         var filedir = path.join(filePath, filename);
         console.log(filedir);
+        if(filedir.indexOf('.DS_Store')!=-1){
+            continue;
+        }
         var stats = fs.statSync(filedir);
         var isFile = stats.isFile();//是文件
         var isDir = stats.isDirectory();//是文件夹
