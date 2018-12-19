@@ -1,19 +1,30 @@
 const path = require("path");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const Webpack = require('webpack');//1热更新
+const MiniCssExtractPlugin = require("mini-css-extract-plugin"); //提取css到单独文件的插件
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin'); //压缩css插件
+const Webpack = require('webpack'); //1热更新
 const getEntry = require('./config/getEntry');
-const getLoader = require('./config/loader');
+const getSassLoader = require('./config/sassLoader');
 const getHtml = require('./config/getHtml');
+const TerserPlugin = require('terser-webpack-plugin');
+var config = require('./config/index');
+
 var entries = getEntry();
 var htmls = getHtml();
+var production = process.env.npm_lifecycle_script.indexOf('production')!=-1;
 
+var assetsPath = function (_path) {
+    var assetsSubDirectory = production ?
+        config.build.assetsSubDirectory :
+        config.dev.assetsSubDirectory
+    return path.posix.join(assetsSubDirectory, _path)
+}
 
 var opts = {
     mode: 'development',
-    // entry:['./src/index.js','./src/index2.js'],
     entry: entries,
-    //devtool: false,
+    devtool: false,
+    //devtool: 'cheap-module-inline-source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'js/[name].js'
@@ -22,37 +33,38 @@ var opts = {
 
     },
     module: {
-        rules: [
+        rules: [{
+                test: /\.html$/,
+                loader: 'text-loader' // path.resolve(__dirname,'loader/html.js'),
+            },
             {
-        　　     test: /\.html$/,
-        　　     loader: 'text-loader'// path.resolve(__dirname,'loader/html.js'),
-             },
-             {
                 test: /\.scss$/,
-                use:[
-                    //{ loader: 'vue-style-loader' },
-                { loader: 'css-loader', options: { sourceMap: true } },
-                { loader: 'sass-loader', options: { sourceMap: true } },
-                //{loader: 'postcss-loader',options:{plugins:[require("autoprefixer")("last 100 versions")]}},
-                { loader: 'sass-resources-loader',
-                  options: {
-                    sourceMap: true,
-                    resources: [
-                        path.resolve(__dirname, 'src/style/helpers/core/_variables.scss'),
-                        path.resolve(__dirname, 'src/style/helpers/core/_mixin.scss')
-                      //resolveFromRootDir('src/styles/variables.scss'),
-                    ]
-                  }
-                },
-                //{loader:'postcss-loader'},
-                /*{loader:'postcss-loader',options: {
-                    plugins: [
-                        //require("autoprefixer") 
-                    ]
-                }}*/
-            ]
-
-             }
+                use: getSassLoader(__dirname)
+            },
+            {
+                test: /\.(json)(\?.*)?$/,
+                loader: 'url-loader',
+                query: {
+                    limit: 1,
+                    name: assetsPath('configs/[name].[ext]')
+                }
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg|cur)(\?.*)?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 1000,
+                    name: assetsPath('image/[name].[hash:7].[ext]')
+                }
+            },
+            {
+                test: /\.(woff2?|eot|ttf|otf|svg)(\?.*)?$/,
+                loader: 'url-loader',
+                query: {
+                    limit: 1000,
+                    name: assetsPath('fonts/[name].[hash:7].[ext]')
+                }
+            }
         ]
     },
     //devServer
@@ -62,19 +74,16 @@ var opts = {
         //服务器ip地址，localhost
         host: 'localhost',
         port: 8090,
-        open: true,//自动打开浏览器
-        hot: true//2热更新
+        open: true, //自动打开浏览器
+        hot: production ? false : true //2热更新
     },
     plugins: [
-        new Webpack.HotModuleReplacementPlugin(),//3热更新
-        new CleanWebpackPlugin(['dist']),//删除dist
-        //new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
+
         new MiniCssExtractPlugin({
-            // Options similar to the same options in webpackOptions.output
-            // both options are optional
-            filename: "[name].css",
+            filename: "css/[name].css", ////都提到build目录下的css目录中
             chunkFilename: "[id].css"
         })
+
     ],
 
 
@@ -86,5 +95,41 @@ if (htmls && htmls.length > 0) {
 
         opts.plugins.push(item);
     })
+}
+if (!production) {
+    opts.plugins = opts.plugins.concat([
+        new Webpack.HotModuleReplacementPlugin(), //3热更新
+    ])
+} else {
+   
+    opts.plugins = opts.plugins.concat([
+        new CleanWebpackPlugin(['dist']), //删除dist 
+        new OptimizeCssAssetsPlugin(),
+        
+    ]);
+    opts.optimization = {
+        minimizer: [new TerserPlugin()],
+        splitChunks: {
+            chunks: "async",
+            minSize: 30000,
+            minChunks: 1,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            automaticNameDelimiter: '~',
+            name: true,
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
+            }
+        }
+    }
+    
 }
 module.exports = opts;

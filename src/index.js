@@ -6,7 +6,8 @@ import test from './../template/test.html' ;
 
 console.log(test);
 const a=()=>{
-   // alert(test)
+   
 }
+
 
 a();

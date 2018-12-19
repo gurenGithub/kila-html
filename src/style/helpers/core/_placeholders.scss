@@ -1,0 +1,43 @@
+%inline-block{
+	display: inline-block;
+}
+%absolute{
+	position: absolute;
+}
+%relative{
+	position: relative;
+}
+%fixed{
+	position: fixed;
+}
+%of-hidden{
+	overflow: hidden;
+}
+%opacity0{
+	opacity: 0;
+}
+%opacity1{
+	opacity: 1;
+}
+%vertical-m{
+	vertical-align: middle;
+}
+%vertical{
+	@extend %vertical-m;
+	@extend %inline-block;
+}
+%l{
+	float: left;
+}
+%r{
+	float: right;
+}
+%hide{
+  @extend %opacity0;
+  visibility: hidden;
+  transition: opacity 300ms ease-out 0s, transform 300ms ease-out 0s;
+}
+%show{
+  @extend %opacity1;
+  visibility: visible;
+}

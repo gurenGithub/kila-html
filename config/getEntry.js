@@ -22,10 +22,7 @@ function fileDisplay(filePath) {
        
         //获取当前文件的绝对路径
         var filedir = path.join(filePath, filename);
-        console.log(filedir);
-        if(filedir.indexOf('.DS_Store')!=-1){
-            continue;
-        }
+        
         var stats = fs.statSync(filedir);
         var isFile = stats.isFile();//是文件
         var isDir = stats.isDirectory();//是文件夹
@@ -37,11 +34,16 @@ function fileDisplay(filePath) {
 
         if (isFile) {
             
+        if(filedir.indexOf('.js')==-1 ){
+            continue;
+        }
+        console.log(filedir);
             myFiles.push(filedir);
             //console.log(filedir);
         }
         if (isDir) {
-            
+           
+           
            fileDisplay(filedir);//递归，如果是文件夹，就继续遍历该文件夹下面的文件 
             
         }
@@ -52,7 +54,7 @@ const getEntry=function(){
 
      var getFile=(file)=>{
 
-        return ['babel-polyfill', './src/'+file+'.js']
+        return [/*'babel-polyfill',*/ './src/'+file+'.js']
      }
 
     
@@ -66,7 +68,7 @@ const getEntry=function(){
         var name=item.replace(_path+'/','').replace(/\//gi,'_').replace(/.js/gi,'');
         
       // var item={}
-      entries[name]=['babel-polyfill', sortFile];
+      entries[name]=[/*'babel-polyfill',*/  sortFile];
       
     })
    

@@ -29,11 +29,16 @@ function fileDisplay(filePath) {
         //continue;
         //根据文件路径获取文件信息，返回一个fs.Stats对象
         //,function(eror,stats){
-
+         
 
 
         if (isFile) {
-
+          
+           
+        if(filedir.indexOf('.html')==-1 ){
+            continue;
+        }
+        console.log(filedir);
             myFiles.push(filedir);
             //console.log(filedir);
         }
@@ -61,7 +66,7 @@ const getHtml = function () {
 
         // var item={}
 
-        console.log(sortFile,name,chunks);
+       // console.log(sortFile,name,chunks);
         //entries[name]=['babel-polyfill', sortFile];
 
         var page = new HtmlWebpackPlugin({
