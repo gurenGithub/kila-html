@@ -12,7 +12,9 @@ var config = require('./config/index');
 var entries = getEntry();
 var htmls = getHtml();
 var production = process.env.npm_lifecycle_script.indexOf('production')!=-1;
-
+function resolve (dir) {
+    return path.join(__dirname, '..', dir)
+  }
 var assetsPath = function (_path) {
     var assetsSubDirectory = production ?
         config.build.assetsSubDirectory :
@@ -30,7 +32,11 @@ var opts = {
         filename: 'js/[name].js'
     },
     resolve: {
-
+        extensions: [".js", ".json"],
+        alias: {
+            //'vue$': 'vue/dist/vue.esm.js',
+            '@': path.resolve(__dirname, 'src'),
+          }
     },
     module: {
         rules: [{
