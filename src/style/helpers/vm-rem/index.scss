@@ -1,0 +1,21 @@
+@import "_border.scss";
+@import "_util.scss";
+
+html{
+    @include root-font-size();//启用Rem布局
+}
+/*
+body{
+    width: rem(100);
+}*/
+/*
+
+
+导出函数 
+ px2rem
+ font-size
+ rem2px
+ border-radius
+ border-single
+ border-multiple
+*/
