@@ -68,7 +68,7 @@ const getEntry=function(){
         var name=item.replace(_path+'/','').replace(/\//gi,'_').replace(/.js/gi,'');
         
       // var item={}
-      entries[name]=[/*'babel-polyfill',*/  sortFile];
+      entries[name]=['babel-polyfill',  sortFile];
       
     })
    
