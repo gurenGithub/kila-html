@@ -62,7 +62,7 @@ const getHtml = function () {
 
         var sortFile = item.replace(_path, './html');
         var name = item.replace(_path + '/', '');
-        var chunks = item.replace(_path + '/', '').replace(/\//gi, '_').replace(/.html/gi, '');
+        var chunks = item.replace(_path + '/', '/').replace(/\//gi, '/').replace(/.html/gi, '');
 
         // var item={}
 
