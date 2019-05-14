@@ -22,6 +22,8 @@ var assetsPath = function (_path) {
     return path.posix.join(assetsSubDirectory, _path)
 }
 
+
+console.log(entries);
 var opts = {
     mode: 'development',
     entry: entries,
@@ -36,6 +38,9 @@ var opts = {
         alias: {
             //'vue$': 'vue/dist/vue.esm.js',
             '@': path.resolve(__dirname, 'src'),
+            '@c': path.resolve(__dirname, 'src/components'),
+            '@h': path.resolve(__dirname, 'html'),
+            
           }
     },
     module: {
