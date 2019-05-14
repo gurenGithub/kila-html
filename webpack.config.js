@@ -7,6 +7,7 @@ const getEntry = require('./config/getEntry');
 const getSassLoader = require('./config/sassLoader');
 const getHtml = require('./config/getHtml');
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 var config = require('./config/index');
 
 var entries = getEntry();
@@ -65,7 +66,7 @@ var opts = {
                 loader: 'url-loader',
                 options: {
                     limit: 1000,
-                    name: assetsPath('image/[name].[hash:7].[ext]')
+                    name: assetsPath('assets/img/[name].[ext]?[hash:7]')
                 }
             },
             {
@@ -73,7 +74,7 @@ var opts = {
                 loader: 'url-loader',
                 query: {
                     limit: 1000,
-                    name: assetsPath('fonts/[name].[hash:7].[ext]')
+                    name: assetsPath('assets/fonts/[name].[hash:7].[ext]')
                 }
             }
         ]
@@ -81,7 +82,7 @@ var opts = {
     //devServer
     devServer: {
         //设置服务器访问的基本目录
-        contentBase: path.resolve(__dirname, 'dist'),
+        contentBase: path.resolve(__dirname, !production?'src':'dist'),
         //服务器ip地址，localhost
         host: 'localhost',
         port: 8090,
@@ -116,6 +117,10 @@ if (!production) {
     opts.plugins = opts.plugins.concat([
         new CleanWebpackPlugin(['dist']), //删除dist 
         new OptimizeCssAssetsPlugin(),
+        new CopyPlugin([
+            { from: path.resolve(__dirname, 'src/assets'), to: path.resolve(__dirname, 'dist/assets') }
+           
+          ])
         
     ]);
     opts.optimization = {

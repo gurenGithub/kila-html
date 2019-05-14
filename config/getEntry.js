@@ -68,7 +68,7 @@ const getEntry=function(){
         
         console.log(name);
       // var item={}
-      entries[name]=['babel-polyfill',  sortFile];
+      entries[name]=[/*'babel-polyfill',*/  sortFile];
       
     })
    

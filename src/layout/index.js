@@ -7,7 +7,7 @@ const onLayout = function (callback) {
     header($wrap, {})
     body($wrap, {});
     footer($wrap, {})
-    callback($('.kila-html_body'))
+    callback($('.kila-html_body'), $('.kila-html_header'), $('.kila-html_footer'))
 }
 
 export default onLayout;

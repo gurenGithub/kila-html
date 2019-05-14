@@ -27,8 +27,8 @@ var assetsPath = function (_path) {
     test: /\.(png|jpe?g|gif|svg|cur)(\?.*)?$/,
     loader: 'url-loader',
     options: {
-        limit: 1000,
-        name: assetsPath('image/[name].[hash:7].[ext]')
+        limit: 10000,
+        name: assetsPath('img/[name].[hash:7].[ext]')
     }
 },
 {
