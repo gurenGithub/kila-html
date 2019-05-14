@@ -4,8 +4,8 @@ var config={
         assetsPublicPath: '/',
     },
     build:{
-        assetsSubDirectory: '',
-        assetsPublicPath: '//admin-data.jin10.com/',
+        assetsSubDirectory: '/',
+        assetsPublicPath: '/',
     },
 }
 
