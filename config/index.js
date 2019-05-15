@@ -1,11 +1,11 @@
 var config={
     dev:{
-        assetsSubDirectory: '/',
-        assetsPublicPath: '/',
+        assetsSubDirectory: '',
+        assetsPublicPath: '',
     },
     build:{
-        assetsSubDirectory: '/',
-        assetsPublicPath: '/',
+        assetsSubDirectory: '',
+        assetsPublicPath: '//sengo-cdn.oss-cn-shenzhen.aliyuncs.com/test/',
     },
 }
 

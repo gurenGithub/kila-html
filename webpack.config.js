@@ -12,10 +12,11 @@ var config = require('./config/index');
 
 var entries = getEntry();
 var htmls = getHtml();
-var production = process.env.npm_lifecycle_script.indexOf('production')!=-1;
-function resolve (dir) {
+var production = process.env.npm_lifecycle_script.indexOf('production') != -1;
+
+function resolve(dir) {
     return path.join(__dirname, '..', dir)
-  }
+}
 var assetsPath = function (_path) {
     var assetsSubDirectory = production ?
         config.build.assetsSubDirectory :
@@ -32,7 +33,8 @@ var opts = {
     //devtool: 'cheap-module-inline-source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'js/[name].js'
+        filename: 'js/[name].js?[hash:7]',
+        publicPath: production? config.build.assetsPublicPath:config.dev.assetsPublicPath
     },
     resolve: {
         extensions: [".js", ".json"],
@@ -40,9 +42,10 @@ var opts = {
             //'vue$': 'vue/dist/vue.esm.js',
             '@': path.resolve(__dirname, 'src'),
             '@c': path.resolve(__dirname, 'src/components'),
+            '@i': path.resolve(__dirname,  'src/assets/img'),
             '@h': path.resolve(__dirname, 'html'),
-            
-          }
+
+        }
     },
     module: {
         rules: [{
@@ -66,7 +69,7 @@ var opts = {
                 loader: 'url-loader',
                 options: {
                     limit: 1000,
-                    name: assetsPath('assets/img/[name].[ext]?[hash:7]')
+                    name: assetsPath('assets/img/[name].[ext]?v=[hash:8]')
                 }
             },
             {
@@ -82,7 +85,7 @@ var opts = {
     //devServer
     devServer: {
         //设置服务器访问的基本目录
-        contentBase: path.resolve(__dirname, !production?'src':'dist'),
+        contentBase: path.resolve(__dirname, !production ? 'src' : production? config.build.assetsPublicPath:config.dev.assetsPublicPath),
         //服务器ip地址，localhost
         host: 'localhost',
         port: 8090,
@@ -92,8 +95,10 @@ var opts = {
     plugins: [
 
         new MiniCssExtractPlugin({
-            filename: "css/[name].css", ////都提到build目录下的css目录中
-            chunkFilename: "[id].css"
+            filename: "css/[name].css?[hash:7]", ////都提到build目录下的css目录中 
+            chunkFilename:"css/[name].css?[hash:7]"
+            //chunkFilename: "css/[name].chunk.css"
+
         })
 
     ],
@@ -113,15 +118,18 @@ if (!production) {
         new Webpack.HotModuleReplacementPlugin(), //3热更新
     ])
 } else {
-   
+
     opts.plugins = opts.plugins.concat([
         new CleanWebpackPlugin(['dist']), //删除dist 
+
         new OptimizeCssAssetsPlugin(),
-        new CopyPlugin([
-            { from: path.resolve(__dirname, 'src/assets'), to: path.resolve(__dirname, 'dist/assets') }
-           
-          ])
-        
+        new CopyPlugin([{
+                from: path.resolve(__dirname, 'src/assets'),
+                to: path.resolve(__dirname, 'dist/assets')
+            }
+
+        ])
+
     ]);
     opts.optimization = {
         minimizer: [new TerserPlugin()],
@@ -142,10 +150,48 @@ if (!production) {
                     minChunks: 2,
                     priority: -20,
                     reuseExistingChunk: true
+                },
+                templates: {
+                    name: 'templates',
+                    test: /\.html/,
+                    chunks: 'all',
+                    enforce: true,
+                    priority: 20,
+                    minChunks: 2
+                },
+                utils: {
+                    name: 'utils',
+                    test: /\.js$/,
+                    chunks: 'all',
+                    enforce: true,
+                    priority: 20,
+                    minChunks: 2
+                },
+                styles: {
+                    name: 'utils',
+                    test: /\.scss$/,
+                    chunks: 'all',
+                    enforce: true,
+                    priority: 20,
+                    minChunks: 2,
                 }
+                /*,styles: {
+                    name: 'styles',
+                    test: /\.css$/,
+                    chunks: 'all',
+                    priority: -10,
+                    enforce: true
+                },
+                sass: {
+                    name: 'sass',
+                    test: /\.(sa|sc|)ss$/,
+                    chunks: 'all',
+                    priority: -10,
+                    enforce: true
+                }*/
             }
         }
     }
-    
+
 }
 module.exports = opts;

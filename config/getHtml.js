@@ -64,6 +64,9 @@ const getHtml = function () {
         var name = item.replace(_path + '/', '');
         var chunks = item.replace(_path + '/', '').replace(/\//gi, '').replace(/.html/gi, '');
 
+        console.log(name,'html');
+
+        var entityName=name.replace('.html','');
         // var item={}
 
        // console.log(sortFile,name,chunks);
@@ -75,7 +78,7 @@ const getHtml = function () {
             //name:name,
             //title: '第二个页面',
             filename: name,
-            chunks: [chunks],
+            chunks: [entityName,'vendor', 'utils'],
             minify:{
                 removeComments:true,
                 collapseWhitespace:true

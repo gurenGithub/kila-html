@@ -64,9 +64,9 @@ const getEntry=function(){
     myFiles.map(item=>{
 
         var sortFile=item.replace(_path,'./src/js');
-        var name=item.replace(_path+'/','').replace(/\//gi,'').replace(/.js/gi,'');
+        var name=item.replace(_path+'/','').replace(/\//gi,'/').replace(/.js/gi,'');
         
-        console.log(name);
+        console.log(name,'js');
       // var item={}
       entries[name]=[/*'babel-polyfill',*/  sortFile];
       
