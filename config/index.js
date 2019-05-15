@@ -1,6 +1,6 @@
 var config={
     dev:{
-        assetsSubDirectory: '',
+        assetsSubDirectory: '/',
         assetsPublicPath: '',
     },
     build:{
